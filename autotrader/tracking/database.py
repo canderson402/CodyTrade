@@ -18,7 +18,14 @@ logger = logging.getLogger(__name__)
 
 # If DATABASE_URL is set (e.g. Supabase PostgreSQL), use it.
 # Otherwise fall back to local SQLite for development.
+# Check both os.environ (local .env) and Streamlit secrets (cloud).
 _DATABASE_URL = os.getenv("DATABASE_URL", "")
+if not _DATABASE_URL:
+    try:
+        import streamlit as st
+        _DATABASE_URL = st.secrets.get("DATABASE_URL", "")
+    except Exception:
+        pass
 if _DATABASE_URL:
     _ENGINE = create_engine(_DATABASE_URL, echo=False)
     logger.info("Using remote database (PostgreSQL)")

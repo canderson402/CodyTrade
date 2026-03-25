@@ -10,10 +10,23 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
-# --- API Keys (loaded from .env, never hardcoded) ---
-ALPACA_API_KEY: str = os.getenv("ALPACA_API_KEY", "")
-ALPACA_SECRET_KEY: str = os.getenv("ALPACA_SECRET_KEY", "")
-FINNHUB_API_KEY: str = os.getenv("FINNHUB_API_KEY", "")
+
+def _get_secret(key: str, default: str = "") -> str:
+    """Read from os.environ (local .env) or Streamlit secrets (cloud)."""
+    value = os.getenv(key, "")
+    if not value:
+        try:
+            import streamlit as st
+            value = st.secrets.get(key, default)
+        except Exception:
+            value = default
+    return value
+
+
+# --- API Keys (loaded from .env or Streamlit secrets, never hardcoded) ---
+ALPACA_API_KEY: str = _get_secret("ALPACA_API_KEY")
+ALPACA_SECRET_KEY: str = _get_secret("ALPACA_SECRET_KEY")
+FINNHUB_API_KEY: str = _get_secret("FINNHUB_API_KEY")
 
 # --- Watchlist ---
 # Swing watchlist — large-caps with strong trends and heavy news coverage

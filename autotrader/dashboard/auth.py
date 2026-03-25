@@ -16,9 +16,21 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Password hashes loaded from .env — never hardcoded in source
-_ADMIN_HASH: str = os.getenv("ADMIN_PASSWORD_HASH", "")
-_VIEWER_HASH: str = os.getenv("VIEWER_PASSWORD_HASH", "")
+
+def _get_secret(key: str, default: str = "") -> str:
+    """Read a secret from os.environ (local) or st.secrets (Streamlit Cloud)."""
+    value = os.getenv(key, "")
+    if not value:
+        try:
+            value = st.secrets.get(key, default)
+        except Exception:
+            value = default
+    return value
+
+
+# Password hashes loaded from .env or Streamlit secrets — never hardcoded
+_ADMIN_HASH: str = _get_secret("ADMIN_PASSWORD_HASH")
+_VIEWER_HASH: str = _get_secret("VIEWER_PASSWORD_HASH")
 
 USERS: dict[str, dict] = {
     "admin": {"hash": _ADMIN_HASH, "role": "admin"},
