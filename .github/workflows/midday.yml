@@ -1,0 +1,37 @@
+name: Midday Pipeline
+
+on:
+  schedule:
+    # 12:00 PM CT = 17:00 UTC
+    - cron: '0 17 * * 1-5'
+  workflow_dispatch:
+
+jobs:
+  midday:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: autotrader
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Cache pip packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('autotrader/requirements.txt') }}
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run midday pipeline
+        env:
+          ALPACA_API_KEY: ${{ secrets.ALPACA_API_KEY }}
+          ALPACA_SECRET_KEY: ${{ secrets.ALPACA_SECRET_KEY }}
+          FINNHUB_API_KEY: ${{ secrets.FINNHUB_API_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: python -c "from main import midday_pipeline; midday_pipeline()"

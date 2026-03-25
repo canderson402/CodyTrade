@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \"import backtrader as bt; print\\(''Backtrader version:'', bt.__version__\\)\")",
+      "Bash(python -c \"import alpaca; print\\(dir\\(alpaca\\)\\)\")",
+      "Bash(python -c \"from alpaca.trading.client import TradingClient; print\\(''TradingClient OK''\\)\")",
+      "Bash(python -c \":*)",
+      "Bash(python -c \"import quantstats; print\\(''quantstats OK, version:'', quantstats.__version__\\)\")"
+    ]
+  }
+}
