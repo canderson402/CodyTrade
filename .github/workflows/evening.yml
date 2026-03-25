@@ -1,9 +1,9 @@
 name: Evening Pipeline
 
 on:
-  schedule:
-    # 4:30 PM CT = 21:30 UTC
-    - cron: '30 21 * * 1-5'
+  # schedule:
+  #   # 4:30 PM CT = 21:30 UTC
+  #   - cron: '30 21 * * 1-5'
   workflow_dispatch:
 
 jobs:

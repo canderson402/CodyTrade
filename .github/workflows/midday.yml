@@ -1,9 +1,9 @@
 name: Midday Pipeline
 
 on:
-  schedule:
-    # 12:00 PM CT = 17:00 UTC
-    - cron: '0 17 * * 1-5'
+  # schedule:
+  #   # 12:00 PM CT = 17:00 UTC
+  #   - cron: '0 17 * * 1-5'
   workflow_dispatch:
 
 jobs:
