@@ -26,10 +26,22 @@ if not _DATABASE_URL:
         _DATABASE_URL = st.secrets.get("DATABASE_URL", "")
     except Exception:
         pass
+
 if _DATABASE_URL:
-    _ENGINE = create_engine(_DATABASE_URL, echo=False)
-    logger.info("Using remote database (PostgreSQL)")
-else:
+    # Supabase requires SSL connections
+    connect_args = {}
+    if "supabase" in _DATABASE_URL:
+        if "sslmode" not in _DATABASE_URL:
+            sep = "&" if "?" in _DATABASE_URL else "?"
+            _DATABASE_URL += f"{sep}sslmode=require"
+    try:
+        _ENGINE = create_engine(_DATABASE_URL, echo=False, pool_pre_ping=True)
+        logger.info("Using remote database (PostgreSQL)")
+    except Exception as e:
+        logger.error("Failed to create PostgreSQL engine: %s — falling back to SQLite", e)
+        _DATABASE_URL = ""
+
+if not _DATABASE_URL:
     _DB_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "autotrader.db"))
     _ENGINE = create_engine(f"sqlite:///{_DB_PATH}", echo=False)
     logger.info("Using local database (SQLite)")
@@ -91,7 +103,10 @@ class GoalProgress(Base):
 
 
 # Create all tables if they don't exist yet
-Base.metadata.create_all(_ENGINE)
+try:
+    Base.metadata.create_all(_ENGINE)
+except Exception as e:
+    logger.error("Failed to create tables: %s", e)
 
 
 def log_signal(signal_dict: dict) -> None:
