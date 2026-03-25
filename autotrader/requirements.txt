@@ -1,10 +1,10 @@
+--extra-index-url https://download.pytorch.org/whl/cpu
 alpaca-py
 yfinance
 pandas
 pandas-ta
 finnhub-python
 transformers
---extra-index-url https://download.pytorch.org/whl/cpu
 torch
 xgboost
 scikit-learn
