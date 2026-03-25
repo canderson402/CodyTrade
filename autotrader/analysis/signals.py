@@ -22,7 +22,13 @@ from config import (
 from data.market import get_historical_bars
 from data.news import get_news_headlines
 from analysis.technical import compute_indicators, technical_score
-from analysis.sentiment import score_headlines
+try:
+    from analysis.sentiment import score_headlines
+except ImportError:
+    # torch/transformers not installed — return neutral sentiment
+    def score_headlines(headlines: list[str]) -> float:
+        """Fallback: return neutral score when FinBERT is unavailable."""
+        return 0.5
 
 logger = logging.getLogger(__name__)
 

@@ -1,18 +1,13 @@
---extra-index-url https://download.pytorch.org/whl/cpu
 alpaca-py
 yfinance
 pandas
 pandas-ta
 finnhub-python
-transformers
-torch
 xgboost
 scikit-learn
-backtrader
 quantstats
 streamlit
 plotly
-apscheduler
 python-dotenv
 SQLAlchemy
 psycopg2-binary

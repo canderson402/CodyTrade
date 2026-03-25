@@ -20,7 +20,13 @@ from dashboard.auth import login_gate, logout, is_admin, get_username
 from analysis.signals import compute_composite_signal
 from data.market import get_historical_bars
 from data.news import get_news_headlines
-from analysis.sentiment import sentiment_pipeline, LABEL_SCORES
+# Sentiment model may not be available in cloud (torch is heavy).
+# Dashboard degrades gracefully — shows headlines without sentiment labels.
+try:
+    from analysis.sentiment import sentiment_pipeline, LABEL_SCORES
+except ImportError:
+    sentiment_pipeline = None
+    LABEL_SCORES = {}
 from trading.paper_trader import get_portfolio_status
 from tracking.database import (
     get_recent_signals, get_recent_trades, get_trades_by_strategy,
