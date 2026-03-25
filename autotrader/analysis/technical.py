@@ -7,7 +7,10 @@ implements rule-based scoring — each rule is commented with *why* it matters.
 import logging
 
 import pandas as pd
-import pandas_ta as ta
+try:
+    import pandas_ta as ta
+except ImportError:
+    ta = None
 
 import sys
 import os
@@ -21,6 +24,10 @@ def compute_indicators(df: pd.DataFrame) -> pd.DataFrame:
     """Add RSI, MACD, Bollinger Bands, and EMA columns to a price DataFrame. Returns the enriched DataFrame."""
     if df.empty:
         logger.warning("Empty DataFrame passed to compute_indicators")
+        return df
+
+    if ta is None:
+        logger.warning("pandas-ta not installed — skipping indicators")
         return df
 
     # RSI — momentum oscillator that flags overbought/oversold conditions

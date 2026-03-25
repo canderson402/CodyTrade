@@ -8,7 +8,10 @@ import logging
 from datetime import datetime, timedelta
 
 import pandas as pd
-import quantstats as qs
+try:
+    import quantstats as qs
+except ImportError:
+    qs = None
 
 import sys
 import os
@@ -122,7 +125,7 @@ def generate_report() -> str:
     # --- Quantstats Analysis ---
     lines.append("\n--- Portfolio Analytics ---")
     returns = _build_returns_from_trades(trades)
-    if not returns.empty and len(returns) > 5:
+    if qs is not None and not returns.empty and len(returns) > 5:
         try:
             sharpe = qs.stats.sharpe(returns)
             max_dd = qs.stats.max_drawdown(returns)
